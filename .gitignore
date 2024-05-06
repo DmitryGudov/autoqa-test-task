@@ -1,0 +1,7 @@
+/.idea/
+/target/
+/build/
+/.allure/
+/.allure-results/
+/logback.*.log
+/logs/
