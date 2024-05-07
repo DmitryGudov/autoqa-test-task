@@ -14,10 +14,10 @@ import static org.junit.Assert.assertEquals;
 
 public class Tests {
 
-    private LoginPage loginPage = new LoginPage();;
+    private LoginPage loginPage = new LoginPage();
     private DocumentsPage documentsPage = new DocumentsPage();
 
-    private String expectedUrl = ConfigManager.getProperty("documentsPageUrl");;
+    private String documentsPageUrl = ConfigManager.getProperty("documentsPageUrl");
 
     String email = ConfigManager.getProperty("email");
     String password = ConfigManager.getProperty("password");
@@ -32,9 +32,10 @@ public class Tests {
     @Step("Выполнить вход в ЛК кадровика.")
     public void testSuccessfulLogin() {
         loginPage.login(email, password);
-        open(expectedUrl);
-        assertEquals(expectedUrl, webdriver().driver().getWebDriver().getCurrentUrl());
+        documentsPage.openPage();
+        assertEquals(documentsPageUrl, webdriver().driver().getWebDriver().getCurrentUrl());
         documentsPage.searchEmployee("Орлов Д.");
+        documentsPage.notFoundEmployee();
     }
 
     @After

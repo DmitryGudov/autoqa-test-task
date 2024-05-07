@@ -1,35 +1,20 @@
 package pages;
 
+import static com.codeborne.selenide.Selenide.*;
+
 import com.codeborne.selenide.SelenideElement;
 import managers.ConfigManager;
 
-import static com.codeborne.selenide.Selenide.*;
-
 public class DocumentsPage {
-    private String documentsPageUrl;
+
+    private static final String documentsPageUrl = ConfigManager.getProperty("documentsPageUrl");
+
+    private SelenideElement filterInputEmployeeField;
+    private SelenideElement notFoundEmployee;
 
     public DocumentsPage() {
-        documentsPageUrl = ConfigManager.getProperty("documentsPageUrl");
-    }
-
-    private SelenideElement getFilterInputLegalEntityField() {
-        return $x("//*[@data-qa='documents-registry-table-filter-row-legal-entities-select']");
-    }
-
-    private SelenideElement getFilterInputEmployeeField() {
-        return $x("//*[@data-qa='documents-registry-table-filter-row-employees-select']//input");
-    }
-
-    private SelenideElement getFirstEmployeeOnTheList() {
-        return $x("//div[contains(@class,'employee-select__column')])[1]");
-    }
-
-    private SelenideElement getDropdownListLegalEntityField() {
-        return $x("//ng-dropdown-panel[@id='ac46fe5281e3']");
-    }
-
-    private SelenideElement getDropdownListEmployeeField() {
-        return $x("//ng-dropdown-panel[@id='a3b6566b59a3']");
+        filterInputEmployeeField = $x("//*[@data-qa='documents-registry-table-filter-row-employees-select']//input");
+        notFoundEmployee = $x("//div[contains(@class, 'ng-option-disabled')]");
     }
 
     public void openPage() {
@@ -37,8 +22,13 @@ public class DocumentsPage {
     }
 
     public void searchEmployee(String name) {
-        getFilterInputEmployeeField().setValue(name);
-        getFirstEmployeeOnTheList().click();
+        openPage();
+        filterInputEmployeeField.setValue(name);
+    }
+
+    public void notFoundEmployee() {
+        String actualText = notFoundEmployee.getText().replaceAll("\\s+", "").trim();
+        assert actualText.contains("Ненайдено");
     }
 
 }
