@@ -3,26 +3,14 @@ package pages;
 import static com.codeborne.selenide.Selenide.*;
 
 import com.codeborne.selenide.SelenideElement;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+import managers.ConfigManager;
 
 public class LoginPage {
 
-    private Properties properties;
     private String loginPageUrl;
 
     public LoginPage() {
-        properties = new Properties();
-        try {
-            FileInputStream input = new FileInputStream("src/test/java/resources/config.properties");
-            properties.load(input);
-            input.close();
-            loginPageUrl = properties.getProperty("loginPageUrl");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loginPageUrl = ConfigManager.getProperty("loginPageUrl");
     }
 
     private SelenideElement getLoginInput() {
