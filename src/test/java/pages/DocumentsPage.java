@@ -27,8 +27,8 @@ public class DocumentsPage {
         sleep(3000);
     }
 
-    public void notFoundEmployee() {
-        notFoundEmployee.shouldBe(visible);
+    public SelenideElement getNotFoundEmployee() {
+        return notFoundEmployee.shouldBe(visible);
     }
 
     public String notFoundEmployeeString() {

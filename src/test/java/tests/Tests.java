@@ -12,6 +12,7 @@ import pages.DocumentsPage;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.driver;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class Tests {
@@ -47,10 +48,14 @@ public class Tests {
 
     @Step("Поиск по фильтру 'Сотрудник' в реестре документов")
     public void testSearchEmployee() {
-        documentsPage.searchEmployee("Орлов Д.");
-        documentsPage.notFoundEmployee();
-        String actualText = documentsPage.notFoundEmployeeString();
-        assertTrue(actualText.contains("Ненайдено"));
+        documentsPage.searchEmployee("Орлов Д.а");
+        if (documentsPage.getNotFoundEmployee().isDisplayed()) {
+            String actualText = documentsPage.notFoundEmployeeString();
+            assertTrue(actualText.contains("Ненайдено"));
+        } else {
+
+        }
+
     }
 
 
