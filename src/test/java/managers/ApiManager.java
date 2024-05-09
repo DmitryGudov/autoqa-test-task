@@ -36,4 +36,15 @@ public class ApiManager {
                 .post("/clients/{id}/documents/hrRegistry");
     }
 
+    public Response searchEmployeeInHRRegistryApplications(String employeeId) {
+        return given()
+                .baseUri("https://app-regress-dgudov.myhrlink.ru/api/v2")
+                .header("User-Api-Token", USER_API_TOKEN)
+                .contentType(ContentType.JSON)
+                .pathParam("id", CLIENT_ID)
+                .body("{\"employeeIds\":[\"" + employeeId + "\"]}")
+                .when()
+                .post("/clients/{id}/applicationGroups/getHrRegistry");
+    }
+
 }
