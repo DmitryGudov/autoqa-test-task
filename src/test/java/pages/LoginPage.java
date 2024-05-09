@@ -7,22 +7,15 @@ import managers.ConfigManager;
 
 public class LoginPage {
 
-    private String loginPageUrl;
+    private static final String loginPageUrl = ConfigManager.getProperty("loginPageUrl");
+    private SelenideElement loginInput;
+    private SelenideElement passwordInput;
+    private SelenideElement loginButton;
 
     public LoginPage() {
-        loginPageUrl = ConfigManager.getProperty("loginPageUrl");
-    }
-
-    private SelenideElement getLoginInput() {
-        return $x("//input[@data-qa='credential-form-login-input']");
-    }
-
-    private SelenideElement getPasswordInput() {
-        return $x("//input[@data-qa='credential-form-password-input']");
-    }
-
-    private SelenideElement getLoginButton() {
-        return $x("//button[@data-qa='credential-form-submit-button']");
+        loginInput = $x("//input[@data-qa='credential-form-login-input']");
+        passwordInput = $x("//input[@data-qa='credential-form-password-input']");
+        loginButton = $x("//button[@data-qa='credential-form-submit-button']");
     }
 
     public void openPage() {
@@ -30,17 +23,15 @@ public class LoginPage {
     }
 
     public void enterEmail(String email) {
-        getLoginInput().clear();
-        getLoginInput().setValue(email);
+        loginInput.setValue(email);
     }
 
     public void enterPassword(String password) {
-        getPasswordInput().clear();
-        getPasswordInput().setValue(password);
+        passwordInput.setValue(password);
     }
 
     public void clickLoginButton() {
-        getLoginButton().click();
+        loginButton.click();
     }
 
     public void login(String email, String password) {
