@@ -1,6 +1,7 @@
 package managers;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -24,4 +25,15 @@ public class ApiManager {
                 .when()
                 .get("/clients/{id}/documentRegistryFilters/employees");
     }
+
+    public Response searchEmployeeInHRRegistry(String employeeId) {
+        return given()
+                .header("User-Api-Token", USER_API_TOKEN)
+                .contentType(ContentType.JSON)
+                .pathParam("id", CLIENT_ID)
+                .body("{\"employeeIds\":[\"" + employeeId + "\"]}")
+                .when()
+                .post("/clients/{id}/documents/hrRegistry");
+    }
+
 }
