@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pages.ApplicationsPage;
+import pages.EmployeesPage;
 import pages.LoginPage;
 import pages.DocumentsPage;
 
@@ -26,6 +27,7 @@ public class Tests {
     private LoginPage loginPage = new LoginPage();
     private DocumentsPage documentsPage = new DocumentsPage();
     private ApplicationsPage applicationsPage = new ApplicationsPage();
+    private EmployeesPage employeesPage = new EmployeesPage();
 
     private ApiManager apiManager = new ApiManager();
 
@@ -48,6 +50,7 @@ public class Tests {
         testSearchLegalEntityInDocumentsRegistry();
         testSearchEmployeeInApplicationsRegistry();
         testSearchDocumentInApplicationsRegistry();
+        testSearchEmployeeInEmployeesRegistry();
     }
 
     @Step("1. Выполнить вход в ЛК кадровика")
@@ -101,6 +104,14 @@ public class Tests {
         List<Object> applicationGroups = jsonPath.getList("applicationGroups");
         Assertions.assertNotNull(applicationGroups, "Поле 'applicationGroups' должно быть в ответе");
         Assertions.assertTrue(applicationGroups.isEmpty(), "Поле 'applicationGroups' должно быть пустым");
+    }
+
+    @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
+    public void testSearchEmployeeInEmployeesRegistry() {
+        employeesPage.searchEmployee("Орлов Д!");
+        employeesPage.noEmployeesToDisplay();
+        String actualText = employeesPage.noEmployeesToDisplayString();
+        assertTrue(actualText.contains("Нет сотрудников для отображения"));
     }
 
     @After
