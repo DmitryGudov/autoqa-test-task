@@ -45,7 +45,6 @@ public class DocumentsPage {
 
     public void notFoundLegalEntity() {
         notFoundLegalEntity.shouldBe(Condition.visible);
-        sleep(1500);
     }
 
     public String notFoundLegalEntityString() {
