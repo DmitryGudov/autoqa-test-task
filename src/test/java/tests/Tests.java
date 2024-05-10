@@ -48,27 +48,39 @@ public class Tests {
         testSuccessfulLogin();
         testSearchEmployeeInDocumentsRegistry();
         testSearchDocumentInDocumentsRegistry();
-      /*   testSearchLegalEntityInDocumentsRegistry();
+        testSearchLegalEntityInDocumentsRegistry();
         testSearchEmployeeInApplicationsRegistry();
         testSearchDocumentInApplicationsRegistry();
-        testSearchEmployeeInEmployeesRegistry();*/
+        testSearchEmployeeInEmployeesRegistry();
     }
 
     @Step("1. Выполнить вход в ЛК кадровика")
     public void testSuccessfulLogin() {
+        // Входим в аккаунт кадровика из "ОАО "Тепло""
         loginPage.login(email, password);
+
+        // Проверяем, что открыт реестр документов
         assertTrue(driver().getWebDriver().getCurrentUrl().contains(documentsPageUrl));
     }
 
     @Step("1.1. Поиск по фильтру 'Сотрудник' в реестре документов")
     public void testSearchEmployeeInDocumentsRegistry() {
+        // В реестре документов открываем боковое меню
         documentsPage.clickSideFilter();
+
+        // Задаем фильтр по сотруднику "Орлов Д."
         documentsPage.searchEmployee("Орлов Дa");
+
+        /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
+           удовлетворящих условиям поиска, то ожидаем в выпадающем списке "Не найдено" */
         if (documentsPage.notFoundEmployeeVisible() == true) {
             documentsPage.notFoundEmployee();
             String actualText = documentsPage.notFoundEmployeeString();
             assertTrue(actualText.contains("Ненайдено"));
         } else {
+            /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
+               которые удовлетворяют условиям поиска, тогда проверяем, что среди этих сотрудников
+               нет тех, которые относятся к юрлицу "ООО "Кот"" */
             boolean actual = documentsPage.isTextInEmployeeList("ООО \"Кот\"");
             assertEquals(false, actual);
         }
@@ -76,17 +88,29 @@ public class Tests {
 
     @Step("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
     public void testSearchDocumentInDocumentsRegistry() {
+        // Проверяем, что в реестре документов отсутствуют документы, где "Орлов Д." фигурирует в качестве сотрудника
         String employeeId = ConfigManager.getProperty("employeeId");
         Response hrRegistryResponse = apiManager.searchEmployeeInDocumentsRegistry(employeeId);
+
+        // Проверяем, что ответ на запрос возвращается со статусом 200
         Assertions.assertEquals(200, hrRegistryResponse.getStatusCode());
         JsonPath hrJsonPath = hrRegistryResponse.jsonPath();
+
+        // Проверяем, что "result":"true"
+        Assertions.assertTrue(hrJsonPath.getBoolean("result"));
+
+        // Проверяем, что в ответе возвращается пустой массив документов
         List<Object> documents = hrJsonPath.getList("documents");
+        Assertions.assertNotNull(documents, "Поле 'documents' должно быть в ответе");
         Assertions.assertTrue(documents.isEmpty());
     }
 
     @Step("2. В верхнем фильтре нажать на фильтр \"Юрлицо\"")
     public void testSearchLegalEntityInDocumentsRegistry() {
+        // В реестре документов в поле "Юрлицо" вводим "ООО "Кот""
         documentsPage.searchLegalEntity("ООО \"Коот\"");
+
+        // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         documentsPage.notFoundLegalEntity();
         String actualText = documentsPage.notFoundLegalEntityString();
         assertTrue(actualText.contains("Ненайдено"));
@@ -94,7 +118,10 @@ public class Tests {
 
     @Step("3. Открыть реестр заявлений")
     public void testSearchEmployeeInApplicationsRegistry() {
+        // Переходим в реестр заявлений и задаем фильтр по сотруднику "Орлов Д."
         applicationsPage.searchEmployee("Орлов Д!");
+
+        // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         applicationsPage.notFoundEmployee();
         String actualText = applicationsPage.notFoundEmployeeString();
         assertTrue(actualText.contains("Ненайдено"));
@@ -102,19 +129,29 @@ public class Tests {
 
     @Step("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
     public void testSearchDocumentInApplicationsRegistry() {
+        // Проверяем, что в реестре заявлений отсутствуют заявления, где "Орлов Д." фигурирует в качестве сотрудника
         String employeeId = ConfigManager.getProperty("employeeId");
         Response response = apiManager.searchEmployeeInApplicationsRegistry(employeeId);
+
+        // Проверяем, что ответ на запрос возвращается со статусом 200
         Assertions.assertEquals(200, response.getStatusCode(), "Статус ответа должен быть 200");
         JsonPath jsonPath = response.jsonPath();
-        Assertions.assertTrue(jsonPath.getBoolean("result"), "Поле 'result' должно быть true");
+
+        // Проверяем, что "result":"true"
+        Assertions.assertTrue(jsonPath.getBoolean("result"));
+
+        // Проверяем, что в ответе возвращается пустой массив групп заявлений
         List<Object> applicationGroups = jsonPath.getList("applicationGroups");
-        Assertions.assertNotNull(applicationGroups, "Поле 'applicationGroups' должно быть в ответе");
-        Assertions.assertTrue(applicationGroups.isEmpty(), "Поле 'applicationGroups' должно быть пустым");
+        Assertions.assertNotNull(applicationGroups);
+        Assertions.assertTrue(applicationGroups.isEmpty());
     }
 
     @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
     public void testSearchEmployeeInEmployeesRegistry() {
+        // Переходим в реестр сотрудников и задаем в фильтре по ФИО "Орлов Д."
         employeesPage.searchEmployee("Орлов Д!");
+
+        // Проверяем, что в реестре сотрудников нет сотрудников для отображения
         employeesPage.noEmployeesToDisplay();
         String actualText = employeesPage.noEmployeesToDisplayString();
         assertTrue(actualText.contains("Нет сотрудников для отображения"));
