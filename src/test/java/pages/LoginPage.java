@@ -8,6 +8,7 @@ import managers.ConfigManager;
 public class LoginPage {
 
     private static final String loginPageUrl = ConfigManager.getProperty("loginPageUrl");
+
     private SelenideElement loginInput;
     private SelenideElement passwordInput;
     private SelenideElement loginButton;
@@ -39,5 +40,7 @@ public class LoginPage {
         enterEmail(email);
         enterPassword(password);
         clickLoginButton();
+        sleep(2000);
     }
+
 }

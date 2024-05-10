@@ -16,7 +16,6 @@ import pages.LoginPage;
 import pages.DocumentsPage;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.driver;
@@ -28,14 +27,11 @@ public class Tests {
     private DocumentsPage documentsPage = new DocumentsPage();
     private ApplicationsPage applicationsPage = new ApplicationsPage();
 
+    private ApiManager apiManager = new ApiManager();
 
-    private String loginPageUrl = ConfigManager.getProperty("loginPageUrl");
     private String documentsPageUrl = ConfigManager.getProperty("documentsPageUrl");
-    private String applicationsPageUrl = ConfigManager.getProperty("applicationsPageUrl");
     private String email = ConfigManager.getProperty("email");
     private String password = ConfigManager.getProperty("password");
-
-    ApiManager apiManager = new ApiManager();
 
     @Before
     public void setUp() {
@@ -43,73 +39,62 @@ public class Tests {
         Configuration.timeout = 10_000;
     }
 
-
     @Test
     @DisplayName("Проверка недоступности юрлица, на которое у кадровика нет прав")
     public void test() {
         testSuccessfulLogin();
-        testSearchEmployeeInDocuments();
-        testSearchLegalEntity();
-        testSearchEmployeeInApplications();
+        testSearchEmployeeInDocumentsRegistry();
+        testSearchDocumentInDocumentsRegistry();
+        testSearchLegalEntityInDocumentsRegistry();
+        testSearchEmployeeInApplicationsRegistry();
+        testSearchDocumentInApplicationsRegistry();
     }
 
-    @Step("Выполнить вход в ЛК кадровика")
+    @Step("1. Выполнить вход в ЛК кадровика")
     public void testSuccessfulLogin() {
         loginPage.login(email, password);
-        documentsPage.openPage();
         assertTrue(driver().getWebDriver().getCurrentUrl().contains(documentsPageUrl));
     }
 
-    @Step("Поиск по фильтру 'Сотрудник' в реестре документов")
-    public void testSearchEmployeeInDocuments() {
-        // Проверка наличия сотрудника в фильтре "Сотрудник"
-        String search = "Орлов Д.";
-        Response response = apiManager.searchEmployees(search);
-        Assertions.assertEquals(200, response.getStatusCode());
-        JsonPath jsonPath = response.jsonPath();
-        boolean result = jsonPath.getBoolean("result");
-        Assertions.assertTrue(result);
+    @Step("1.1. Поиск по фильтру 'Сотрудник' в реестре документов")
+    public void testSearchEmployeeInDocumentsRegistry() {
+        documentsPage.clickSideFilter();
+        documentsPage.searchEmployee("Орлов Д!");
+        documentsPage.notFoundEmployee();
+        String actualText = documentsPage.notFoundEmployeeString();
+        assertTrue(actualText.contains("Ненайдено"));
+    }
 
-        List<Map<String, Object>> employees = jsonPath.getList("employees");
-        if (employees.isEmpty()) {
-            Assertions.assertTrue(employees.isEmpty());
-        } else {
-            Map<String, Object> firstEmployee = employees.get(0);
-            Map<String, Object> legalEntity = (Map<String, Object>) firstEmployee.get("legalEntity");
-            Assertions.assertNotNull(legalEntity);
-            String legalEntityName = (String) legalEntity.get("name");
-            Assertions.assertNotEquals("ООО \"Коот\"", legalEntityName);
-            String legalEntityShortName = (String) legalEntity.get("shortName");
-            Assertions.assertNotEquals("ООО \"Коот\"", legalEntityShortName);
-        }
-
-        // Проверка наличия документа в реестре по искомому сотруднику
-        String employeeId = "962f94c2-ac7c-45c2-864a-9e3bc484be5d";
-        Response hrRegistryResponse = apiManager.searchEmployeeInHRRegistry(employeeId);
+    @Step("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
+    public void testSearchDocumentInDocumentsRegistry() {
+        String employeeId = ConfigManager.getProperty("employeeId");
+        Response hrRegistryResponse = apiManager.searchEmployeeInDocumentsRegistry(employeeId);
         Assertions.assertEquals(200, hrRegistryResponse.getStatusCode());
         JsonPath hrJsonPath = hrRegistryResponse.jsonPath();
         List<Object> documents = hrJsonPath.getList("documents");
         Assertions.assertTrue(documents.isEmpty());
     }
 
-    @Step("В верхнем фильтре нажать на фильтр \"Юрлицо\"")
-    public void testSearchLegalEntity() {
+    @Step("2. В верхнем фильтре нажать на фильтр \"Юрлицо\"")
+    public void testSearchLegalEntityInDocumentsRegistry() {
         documentsPage.searchLegalEntity("ООО \"Коот\"");
         documentsPage.notFoundLegalEntity();
         String actualText = documentsPage.notFoundLegalEntityString();
         assertTrue(actualText.contains("Ненайдено"));
     }
 
-    @Step("Открыть реестр заявлений")
-    public void testSearchEmployeeInApplications() {
-        applicationsPage.searchEmployee("Орлов Д.ю");
+    @Step("3. Открыть реестр заявлений")
+    public void testSearchEmployeeInApplicationsRegistry() {
+        applicationsPage.searchEmployee("Орлов Д!");
         applicationsPage.notFoundEmployee();
         String actualText = applicationsPage.notFoundEmployeeString();
         assertTrue(actualText.contains("Ненайдено"));
+    }
 
-        // Проверка наличия заявления в реестре по искомому сотруднику
-        String employeeId = "962f94c2-ac7c-45c2-864a-9e3bc484be5d";
-        Response response = apiManager.searchEmployeeInHRRegistryApplications(employeeId);
+    @Step("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
+    public void testSearchDocumentInApplicationsRegistry() {
+        String employeeId = ConfigManager.getProperty("employeeId");
+        Response response = apiManager.searchEmployeeInApplicationsRegistry(employeeId);
         Assertions.assertEquals(200, response.getStatusCode(), "Статус ответа должен быть 200");
         JsonPath jsonPath = response.jsonPath();
         Assertions.assertTrue(jsonPath.getBoolean("result"), "Поле 'result' должно быть true");
@@ -122,4 +107,5 @@ public class Tests {
     public void tearDown() {
         closeWebDriver();
     }
+
 }
