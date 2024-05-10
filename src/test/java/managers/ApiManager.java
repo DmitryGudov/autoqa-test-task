@@ -16,17 +16,8 @@ public class ApiManager {
         RestAssured.baseURI = BASE_URL;
     }
 
-    public Response searchEmployees(String search) {
-        return given()
-                .header("User-Api-Token", USER_API_TOKEN)
-                .pathParam("id", CLIENT_ID)
-                .queryParam("type", "HR")
-                .queryParam("search", search)
-                .when()
-                .get("/clients/{id}/documentRegistryFilters/employees");
-    }
 
-    public Response searchEmployeeInHRRegistry(String employeeId) {
+    public Response searchEmployeeInDocumentsRegistry(String employeeId) {
         return given()
                 .header("User-Api-Token", USER_API_TOKEN)
                 .contentType(ContentType.JSON)
@@ -36,7 +27,7 @@ public class ApiManager {
                 .post("/clients/{id}/documents/hrRegistry");
     }
 
-    public Response searchEmployeeInHRRegistryApplications(String employeeId) {
+    public Response searchEmployeeInApplicationsRegistry(String employeeId) {
         return given()
                 .baseUri("https://app-regress-dgudov.myhrlink.ru/api/v2")
                 .header("User-Api-Token", USER_API_TOKEN)
