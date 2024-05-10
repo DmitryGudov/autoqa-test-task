@@ -1,5 +1,6 @@
 package pages;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 import com.codeborne.selenide.SelenideElement;
@@ -12,11 +13,13 @@ public class LoginPage {
     private SelenideElement loginInput;
     private SelenideElement passwordInput;
     private SelenideElement loginButton;
+    private SelenideElement hrLinkLogo;
 
     public LoginPage() {
         loginInput = $x("//input[@data-qa='credential-form-login-input']");
         passwordInput = $x("//input[@data-qa='credential-form-password-input']");
         loginButton = $x("//button[@data-qa='credential-form-submit-button']");
+        hrLinkLogo = $x("//a[@class='ng-star-inserted']");
     }
 
     public void openPage() {
@@ -40,7 +43,7 @@ public class LoginPage {
         enterEmail(email);
         enterPassword(password);
         clickLoginButton();
-        sleep(2000);
+        hrLinkLogo.shouldBe(visible);
     }
 
 }
