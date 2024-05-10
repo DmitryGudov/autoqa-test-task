@@ -149,12 +149,23 @@ public class Tests {
     @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
     public void testSearchEmployeeInEmployeesRegistry() {
         // Переходим в реестр сотрудников и задаем в фильтре по ФИО "Орлов Д."
-        employeesPage.searchEmployee("Орлов Д!");
+        employeesPage.searchEmployee("Орлов Д");
 
-        // Проверяем, что в реестре сотрудников нет сотрудников для отображения
-        employeesPage.noEmployeesToDisplay();
-        String actualText = employeesPage.noEmployeesToDisplayString();
-        assertTrue(actualText.contains("Нет сотрудников для отображения"));
+        /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
+           удовлетворящих условиям поиска, то в реестре сотрудников ожидаем сообщение о том, что
+           нет сотрудников для отображения */
+        if (employeesPage.noEmployeesToDisplayVisible() == true) {
+            employeesPage.noEmployeesToDisplay();
+            String actualText = employeesPage.noEmployeesToDisplayString();
+            assertTrue(actualText.contains("Нет сотрудников для отображения"));
+        } else {
+            /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
+               которые удовлетворяют условиям поиска, тогда проверяем, что среди этих сотрудников
+               нет тех, которые относятся к юрлицу "ООО "Кот"" */
+            boolean actual = employeesPage.isTextEmployeesRegistryRows("ООО \"Кот\"");
+            assertEquals(false, actual);
+        }
+
     }
 
     @After
