@@ -3,22 +3,24 @@ package pages;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Selenide.$$x;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.*;
 
 public class HandBooksPage {
 
     private SelenideElement handBooksIcon;
+    private SelenideElement legalEntityRegistryPage;
     private ElementsCollection legalEntityRegistryRows;
 
-
-    public void HandBooksPage() {
+    public HandBooksPage() {
         handBooksIcon = $x("//a[@href='/hr/legal-entities']");
-        legalEntityRegistryRows = $$x("//legal-entities-catalog-table-body__row]");
+        legalEntityRegistryPage = $x("//div[@class='legal-entities-catalogs-header']");
+        legalEntityRegistryRows = $$x("//*[@data-qa='legal-entities-catalog-table-body-open-legal-entity-editing-dialog-button']");
     }
 
     public void clickHandBooksIcon() {
         handBooksIcon.click();
+        legalEntityRegistryPage.shouldBe(visible);
     }
 
     public boolean isTextLegalEntityRegistryRows(String text) {

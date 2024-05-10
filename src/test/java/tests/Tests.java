@@ -11,10 +11,7 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pages.ApplicationsPage;
-import pages.EmployeesPage;
-import pages.LoginPage;
-import pages.DocumentsPage;
+import pages.*;
 
 import java.util.List;
 
@@ -29,6 +26,8 @@ public class Tests {
     private DocumentsPage documentsPage = new DocumentsPage();
     private ApplicationsPage applicationsPage = new ApplicationsPage();
     private EmployeesPage employeesPage = new EmployeesPage();
+    private HandBooksPage handBooksPage = new HandBooksPage();
+
 
     private ApiManager apiManager = new ApiManager();
 
@@ -52,6 +51,7 @@ public class Tests {
         testSearchEmployeeInApplicationsRegistry();
         testSearchDocumentInApplicationsRegistry();
         testSearchEmployeeInEmployeesRegistry();
+        testSearchLegalEntityInRegistry();
     }
 
     @Step("1. Выполнить вход в ЛК кадровика")
@@ -149,7 +149,7 @@ public class Tests {
     @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
     public void testSearchEmployeeInEmployeesRegistry() {
         // Переходим в реестр сотрудников и задаем в фильтре по ФИО "Орлов Д."
-        employeesPage.searchEmployee("Орлов Д");
+        employeesPage.searchEmployee("Орлов Дb");
 
         /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
            удовлетворящих условиям поиска, то в реестре сотрудников ожидаем сообщение о том, что
@@ -166,6 +166,16 @@ public class Tests {
             assertEquals(false, actual);
         }
 
+    }
+
+    @Step("5. Открыть раздел \"Справочники\"")
+    public void testSearchLegalEntityInRegistry() {
+        // Переходим в раздел "Справочники"
+        handBooksPage.clickHandBooksIcon();
+
+        // Проверяем, что в перечне юрлиц отсутствует "ООО "Кот""
+        boolean actual = handBooksPage.isTextLegalEntityRegistryRows("ООО \"Кот\"");
+        assertEquals(false, actual);
     }
 
     @After
