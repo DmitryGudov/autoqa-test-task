@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.driver;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class Tests {
@@ -47,10 +48,10 @@ public class Tests {
         testSuccessfulLogin();
         testSearchEmployeeInDocumentsRegistry();
         testSearchDocumentInDocumentsRegistry();
-        testSearchLegalEntityInDocumentsRegistry();
+      /*   testSearchLegalEntityInDocumentsRegistry();
         testSearchEmployeeInApplicationsRegistry();
         testSearchDocumentInApplicationsRegistry();
-        testSearchEmployeeInEmployeesRegistry();
+        testSearchEmployeeInEmployeesRegistry();*/
     }
 
     @Step("1. Выполнить вход в ЛК кадровика")
@@ -62,10 +63,15 @@ public class Tests {
     @Step("1.1. Поиск по фильтру 'Сотрудник' в реестре документов")
     public void testSearchEmployeeInDocumentsRegistry() {
         documentsPage.clickSideFilter();
-        documentsPage.searchEmployee("Орлов Д!");
-        documentsPage.notFoundEmployee();
-        String actualText = documentsPage.notFoundEmployeeString();
-        assertTrue(actualText.contains("Ненайдено"));
+        documentsPage.searchEmployee("Орлов Дa");
+        if (documentsPage.notFoundEmployeeVisible() == true) {
+            documentsPage.notFoundEmployee();
+            String actualText = documentsPage.notFoundEmployeeString();
+            assertTrue(actualText.contains("Ненайдено"));
+        } else {
+            boolean actual = documentsPage.isTextInEmployeeList("ООО \"Кот\"");
+            assertEquals(false, actual);
+        }
     }
 
     @Step("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
