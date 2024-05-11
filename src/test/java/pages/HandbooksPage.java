@@ -6,26 +6,26 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
-public class HandBooksPage {
+public class HandbooksPage {
 
-    private SelenideElement handBooksIcon;
+    private SelenideElement handbooksIcon;
     private SelenideElement legalEntityRegistryPage;
     private ElementsCollection legalEntityRegistryRows;
 
-    public HandBooksPage() {
-        handBooksIcon = $x("//a[@href='/hr/legal-entities']");
+    public HandbooksPage() {
+        handbooksIcon = $x("//a[@href='/hr/legal-entities']");
         legalEntityRegistryPage = $x("//div[@class='legal-entities-catalogs-header']");
         legalEntityRegistryRows = $$x("//*[@data-qa='legal-entities-catalog-table-body-open-legal-entity-editing-dialog-button']");
     }
 
     public void clickHandBooksIcon() {
-        handBooksIcon.click();
+        handbooksIcon.click();
         legalEntityRegistryPage.shouldBe(visible);
     }
 
-    public boolean isTextLegalEntityRegistryRows(String text) {
+    public boolean isTextLegalEntityRegistryRows(String legalEntity) {
         ElementsCollection options = legalEntityRegistryRows;
-        return options.stream().anyMatch(option -> option.getText().contains(text));
+        return options.stream().anyMatch(option -> option.getText().contains(legalEntity));
     }
 
 }

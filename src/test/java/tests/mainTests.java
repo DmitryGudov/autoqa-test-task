@@ -20,14 +20,13 @@ import static com.codeborne.selenide.WebDriverRunner.driver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class Tests {
+public class mainTests {
 
     private LoginPage loginPage = new LoginPage();
     private DocumentsPage documentsPage = new DocumentsPage();
     private ApplicationsPage applicationsPage = new ApplicationsPage();
     private EmployeesPage employeesPage = new EmployeesPage();
-    private HandBooksPage handBooksPage = new HandBooksPage();
-
+    private HandbooksPage handbooksPage = new HandbooksPage();
 
     private ApiManager apiManager = new ApiManager();
 
@@ -43,15 +42,15 @@ public class Tests {
 
     @Test
     @DisplayName("Проверка недоступности юрлица, на которое у кадровика нет прав")
-    public void test() {
+    public void mainTests() {
         testSuccessfulLogin();
         testSearchEmployeeInDocumentsRegistry();
         testSearchDocumentInDocumentsRegistry();
         testSearchLegalEntityInDocumentsRegistry();
         testSearchEmployeeInApplicationsRegistry();
-        testSearchDocumentInApplicationsRegistry();
+        testSearchApplicationInApplicationsRegistry();
         testSearchEmployeeInEmployeesRegistry();
-        testSearchLegalEntityInRegistry();
+        testSearchLegalEntityInLegalEntitiesRegistry();
     }
 
     @Step("1. Выполнить вход в ЛК кадровика")
@@ -73,9 +72,9 @@ public class Tests {
 
         /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
            удовлетворящих условиям поиска, то ожидаем в выпадающем списке "Не найдено" */
-        if (documentsPage.notFoundEmployeeVisible() == true) {
+        if (documentsPage.notFoundEmployeeIsVisible() == true) {
             documentsPage.notFoundEmployee();
-            String actualText = documentsPage.notFoundEmployeeString();
+            String actualText = documentsPage.notFoundEmployeeText();
             assertTrue(actualText.contains("Ненайдено"));
         } else {
             /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
@@ -112,7 +111,7 @@ public class Tests {
 
         // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         documentsPage.notFoundLegalEntity();
-        String actualText = documentsPage.notFoundLegalEntityString();
+        String actualText = documentsPage.notFoundLegalEntityText();
         assertTrue(actualText.contains("Ненайдено"));
     }
 
@@ -123,12 +122,12 @@ public class Tests {
 
         // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         applicationsPage.notFoundEmployee();
-        String actualText = applicationsPage.notFoundEmployeeString();
+        String actualText = applicationsPage.notFoundEmployeeText();
         assertTrue(actualText.contains("Ненайдено"));
     }
 
     @Step("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
-    public void testSearchDocumentInApplicationsRegistry() {
+    public void testSearchApplicationInApplicationsRegistry() {
         // Проверяем, что в реестре заявлений отсутствуют заявления, где "Орлов Д." фигурирует в качестве сотрудника
         String employeeId = ConfigManager.getProperty("employeeId");
         Response response = apiManager.searchEmployeeInApplicationsRegistry(employeeId);
@@ -154,9 +153,9 @@ public class Tests {
         /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
            удовлетворящих условиям поиска, то в реестре сотрудников ожидаем сообщение о том, что
            нет сотрудников для отображения */
-        if (employeesPage.noEmployeesToDisplayVisible() == true) {
+        if (employeesPage.noEmployeesToDisplayIsVisible() == true) {
             employeesPage.noEmployeesToDisplay();
-            String actualText = employeesPage.noEmployeesToDisplayString();
+            String actualText = employeesPage.noEmployeesToDisplayText();
             assertTrue(actualText.contains("Нет сотрудников для отображения"));
         } else {
             /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
@@ -169,12 +168,12 @@ public class Tests {
     }
 
     @Step("5. Открыть раздел \"Справочники\"")
-    public void testSearchLegalEntityInRegistry() {
+    public void testSearchLegalEntityInLegalEntitiesRegistry() {
         // Переходим в раздел "Справочники"
-        handBooksPage.clickHandBooksIcon();
+        handbooksPage.clickHandBooksIcon();
 
         // Проверяем, что в перечне юрлиц отсутствует "ООО "Кот""
-        boolean actual = handBooksPage.isTextLegalEntityRegistryRows("ООО \"Кот\"");
+        boolean actual = handbooksPage.isTextLegalEntityRegistryRows("ООО \"Кот\"");
         assertEquals(false, actual);
     }
 

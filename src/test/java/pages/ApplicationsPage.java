@@ -8,34 +8,34 @@ import static org.junit.Assert.fail;
 
 public class ApplicationsPage {
 
-    private SelenideElement registerOfApplicationsIcon;
-    private SelenideElement employeeFilterInput;
+    private SelenideElement registryOfApplicationsIcon;
+    private SelenideElement employeeFilter;
     private SelenideElement notFoundEmployee;
 
     public ApplicationsPage() {
-        registerOfApplicationsIcon = $x("//a[@href='/hr/applications']");
-        employeeFilterInput = $x("//*[@data-qa='applications-registry-table-filter-row-employees-select']//input");
+        registryOfApplicationsIcon = $x("//a[@href='/hr/applications']");
+        employeeFilter = $x("//*[@data-qa='applications-registry-table-filter-row-employees-select']//input");
         notFoundEmployee = $x("//div[contains(@class, 'ng-option-disabled')]");
     }
 
-    public void clickRegisterOfApplicationsIcon() {
-        registerOfApplicationsIcon.click();
+    public void clickRegistryOfApplicationsIcon() {
+        registryOfApplicationsIcon.click();
     }
 
     public void searchEmployee(String employee) {
-        clickRegisterOfApplicationsIcon();
+        clickRegistryOfApplicationsIcon();
 
         int retryLimit = 60;
         int retryInterval = 500;
         int retries = 0;
 
-        while (retries < retryLimit && !employeeFilterInput.is(Condition.visible)) {
+        while (retries < retryLimit && !employeeFilter.is(Condition.visible)) {
             sleep(retryInterval);
             retries++;
         }
 
-        if (employeeFilterInput.is(Condition.visible)) {
-            employeeFilterInput.setValue(employee);
+        if (employeeFilter.is(Condition.visible)) {
+            employeeFilter.setValue(employee);
         } else {
             fail("Поле для ввода сотрудника не появилось в течение ожидаемого времени!");
         }
@@ -45,7 +45,7 @@ public class ApplicationsPage {
         notFoundEmployee.shouldBe(Condition.visible);
     }
 
-    public String notFoundEmployeeString() {
+    public String notFoundEmployeeText() {
         return notFoundEmployee.getText().replaceAll("\\s+", "").trim();
     }
 
