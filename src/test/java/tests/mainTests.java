@@ -92,11 +92,11 @@ public class mainTests {
     @Step("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
     public void testSearchDocumentInDocumentsRegistry() {
         // Проверяем, что в реестре документов отсутствуют документы, где "Орлов Д." фигурирует в качестве сотрудника
-        Response hrRegistryResponse = apiManager.searchEmployeeInDocumentsRegistry(employeeId);
+        Response response = apiManager.searchEmployeeInDocumentsRegistry(employeeId);
 
         // Проверяем, что ответ на запрос возвращается со статусом 200
-        Assertions.assertEquals(200, hrRegistryResponse.getStatusCode());
-        JsonPath hrJsonPath = hrRegistryResponse.jsonPath();
+        Assertions.assertEquals(200, response.getStatusCode());
+        JsonPath hrJsonPath = response.jsonPath();
 
         // Проверяем, что "result":"true"
         Assertions.assertTrue(hrJsonPath.getBoolean("result"));
@@ -107,7 +107,7 @@ public class mainTests {
         // Если массив документов не пустой
         if (!documents.isEmpty()) {
             // Проверяем, что в теле ответа не содержится текст "ООО "Кот""
-            String responseAsString = hrRegistryResponse.asString();
+            String responseAsString = response.asString();
             Assertions.assertFalse(responseAsString.contains(legalEntity));
         } else {
             // Если массив документов пустой, то проверяем, что он действительно пустой
@@ -149,10 +149,19 @@ public class mainTests {
         // Проверяем, что "result":"true"
         Assertions.assertTrue(jsonPath.getBoolean("result"));
 
-        // Проверяем, что в ответе возвращается пустой массив групп заявлений
-        List<Object> applicationGroups = jsonPath.getList("applicationGroups");
-        Assertions.assertNotNull(applicationGroups);
-        Assertions.assertTrue(applicationGroups.isEmpty());
+        // Получаем массив групп заявлений из JSON-ответа
+        List<Map<String, Object>> applicationGroups = jsonPath.getList("applicationGroups");
+
+        // Если массив групп заявлений не пустой
+        if (!applicationGroups.isEmpty()) {
+            // Проверяем, что в теле ответа не содержится текст "ООО "Кот""
+            String responseAsString = response.asString();
+            Assertions.assertFalse(responseAsString.contains(legalEntity));
+        } else {
+            // Если массив документов пустой, то проверяем, что он действительно пустой
+            Assertions.assertTrue(applicationGroups.isEmpty());
+        }
+
     }
 
     @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")

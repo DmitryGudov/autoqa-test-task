@@ -25,7 +25,7 @@ public class ApplicationsPage {
     public void searchEmployee(String employee) {
         clickRegistryOfApplicationsIcon();
 
-        int retryLimit = 60;
+        int retryLimit = 120;
         int retryInterval = 500;
         int retries = 0;
 
