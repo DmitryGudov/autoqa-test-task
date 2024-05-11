@@ -35,7 +35,7 @@ public class mainTests {
     private String email = ConfigManager.getProperty("email");
     private String password = ConfigManager.getProperty("password");
     private String employee = ConfigManager.getProperty("employeeName");
-    private String legalEntity = ConfigManager.getProperty("legalEntityName");
+    private String legalEntity = ConfigManager.getProperty("legalEntityNameSecond");
     private String employeeId = ConfigManager.getProperty("employeeId");
 
     @Before
