@@ -128,13 +128,19 @@ public class mainTests {
 
     @Step("3. Открыть реестр заявлений")
     public void testSearchEmployeeInApplicationsRegistry() {
-        // Переходим в реестр заявлений и задаем фильтр по сотруднику "Орлов Д."
-        applicationsPage.searchEmployee(employee);
+        // Переходим в реестр заявлений
+        applicationsPage.clickRegistryOfApplicationsIcon();
 
-        // Проверяем, что выпадающий список пуст и отображается "Не найдено"
-        applicationsPage.notFoundEmployee();
-        String actualText = applicationsPage.notFoundEmployeeText();
-        assertTrue(actualText.contains("Ненайдено"));
+        /* Если реестр заявлений не пустой, то проверяем, что в нем нет заявлений, где "Орлов Д." фигурирует
+           в качестве сотрудника, а также то, что в нем нет заявлений, которые относятся к юрлицу "ООО "Кот"" */
+        if (applicationsPage.rowsIsVisible() == true) {
+            boolean actual = applicationsPage.verifyNoTextInRows(legalEntity, employee);
+            assertEquals(true, actual);
+        } else {
+            // Если реестр заявлений пустой, проверяем, что отображается текст "Нет заявлений"
+            String actual = applicationsPage.noApplicationText();
+            assertEquals("Нет заявлений", actual);
+        }
     }
 
     @Step("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
