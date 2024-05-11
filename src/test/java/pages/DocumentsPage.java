@@ -9,19 +9,19 @@ import com.codeborne.selenide.SelenideElement;
 public class DocumentsPage {
 
     private SelenideElement sideFilter;
-    private SelenideElement employeeFilterInput;
+    private SelenideElement employeeFilter;
     private SelenideElement notFoundEmployee;
-    private SelenideElement legalEntityFilterInput;
-    private SelenideElement notFoundLegalEntity;
     private ElementsCollection employeeList;
+    private SelenideElement legalEntityFilter;
+    private SelenideElement notFoundLegalEntity;
 
     public DocumentsPage() {
         sideFilter = $x("//button[@data-qa='side-drawer-button']");
-        employeeFilterInput = $x("//*[@data-qa='documents-filters-form-employees-select']//input");
+        employeeFilter = $x("//*[@data-qa='documents-filters-form-employees-select']//input");
         notFoundEmployee = $x("//employee-select//div[@role='listbox']//div[contains(text(), 'Не найдено')]");
-        legalEntityFilterInput = $x("//*[@data-qa='documents-registry-table-filter-row-legal-entities-select']//input");
-        notFoundLegalEntity = $x("//div[@class='documents-registry-table-filter-row__legal-entity-cell']//div[@role='listbox']//div[contains(text(), 'Не найдено')]");
         employeeList = $$x("//employee-select//div[@role='listbox']//div[contains(@class, 'ng-option')]");
+        legalEntityFilter = $x("//*[@data-qa='documents-registry-table-filter-row-legal-entities-select']//input");
+        notFoundLegalEntity = $x("//div[@class='documents-registry-table-filter-row__legal-entity-cell']//div[@role='listbox']//div[contains(text(), 'Не найдено')]");
     }
 
     public void clickSideFilter() {
@@ -29,11 +29,11 @@ public class DocumentsPage {
     }
 
     public void searchEmployee(String employee) {
-        employeeFilterInput.setValue(employee).shouldBe(Condition.visible);
+        employeeFilter.setValue(employee).shouldBe(Condition.visible);
         sleep(3000);
     }
 
-    public boolean notFoundEmployeeVisible() {
+    public boolean notFoundEmployeeIsVisible() {
         return notFoundEmployee.is(Condition.visible);
     }
 
@@ -41,17 +41,17 @@ public class DocumentsPage {
         notFoundEmployee.shouldBe(Condition.visible);
     }
 
-    public String notFoundEmployeeString() {
+    public String notFoundEmployeeText() {
         return notFoundEmployee.getText().replaceAll("\\s+", "").trim();
     }
 
-    public boolean isTextInEmployeeList(String text) {
+    public boolean isTextInEmployeeList(String legalEntity) {
         ElementsCollection options = employeeList;
-        return options.stream().anyMatch(option -> option.getText().contains(text));
+        return options.stream().anyMatch(option -> option.getText().contains(legalEntity));
     }
 
     public void searchLegalEntity(String legalEntityName) {
-        legalEntityFilterInput.setValue(legalEntityName).shouldBe(Condition.visible);
+        legalEntityFilter.setValue(legalEntityName).shouldBe(Condition.visible);
         sleep(1500);
     }
 
@@ -59,7 +59,7 @@ public class DocumentsPage {
         notFoundLegalEntity.shouldBe(Condition.visible);
     }
 
-    public String notFoundLegalEntityString() {
+    public String notFoundLegalEntityText() {
         return notFoundLegalEntity.getText().replaceAll("\\s+", "").trim();
     }
 
