@@ -1,52 +1,46 @@
 package pages;
 
-import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static org.junit.Assert.fail;
 
 public class ApplicationsPage {
 
-    private SelenideElement registerOfApplicationsIcon;
-    private SelenideElement employeeFilterInput;
-    private SelenideElement notFoundEmployee;
+    private SelenideElement registryOfApplicationsIcon;
+    private SelenideElement noApplications;
+    private SelenideElement applicationsRow;
+    private ElementsCollection applicationsRows;
+
 
     public ApplicationsPage() {
-        registerOfApplicationsIcon = $x("//a[@href='/hr/applications']");
-        employeeFilterInput = $x("//*[@data-qa='applications-registry-table-filter-row-employees-select']//input");
-        notFoundEmployee = $x("//div[contains(@class, 'ng-option-disabled')]");
+        registryOfApplicationsIcon = $x("//a[@href='/hr/applications']");
+        noApplications = $x("//div[contains(@class, 'body')]");
+        applicationsRow = applicationsRows.first();
+        applicationsRows = $$x("//div[contains(@class, 'row')]");
     }
 
-    public void clickRegisterOfApplicationsIcon() {
-        registerOfApplicationsIcon.click();
+    public void clickRegistryOfApplicationsIcon() {
+        registryOfApplicationsIcon.click();
+        sleep(5000);
     }
 
-    public void searchEmployee(String employee) {
-        clickRegisterOfApplicationsIcon();
+    public boolean rowsIsVisible() {
+        return applicationsRow.is(visible);
+    }
 
-        int retryLimit = 60;
-        int retryInterval = 500;
-        int retries = 0;
-
-        while (retries < retryLimit && !employeeFilterInput.is(Condition.visible)) {
-            sleep(retryInterval);
-            retries++;
+    public boolean verifyNoTextInRows(String employee, String legalEntity) {
+        for (SelenideElement row : applicationsRows) {
+            if (row.getText().contains(employee) || row.getText().contains(legalEntity)) {
+                return false;
+            }
         }
-
-        if (employeeFilterInput.is(Condition.visible)) {
-            employeeFilterInput.setValue(employee);
-        } else {
-            fail("Поле для ввода сотрудника не появилось в течение ожидаемого времени!");
-        }
+        return true;
     }
 
-    public void notFoundEmployee() {
-        notFoundEmployee.shouldBe(Condition.visible);
-    }
-
-    public String notFoundEmployeeString() {
-        return notFoundEmployee.getText().replaceAll("\\s+", "").trim();
+    public String noApplicationText() {
+        return noApplications.getText();
     }
 
 }

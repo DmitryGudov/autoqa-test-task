@@ -8,25 +8,25 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class EmployeesPage {
 
-    private SelenideElement registerOfEmployeesIcon;
-    private SelenideElement employeeNameFilterInput;
+    private SelenideElement registryOfEmployeesIcon;
+    private SelenideElement employeeNameFilter;
     private SelenideElement noEmployeesToDisplay;
     private ElementsCollection employeesRegistryRows;
 
     public EmployeesPage() {
-        registerOfEmployeesIcon = $x("//a[@href='/hr/employees']");
-        employeeNameFilterInput = $x("//*[@data-qa='registry-header-name-input']");
+        registryOfEmployeesIcon = $x("//a[@href='/hr/employees']");
+        employeeNameFilter = $x("//*[@data-qa='registry-header-name-input']");
         noEmployeesToDisplay = $x("//div[contains(@class, 'empty')]");
         employeesRegistryRows = $$x("//employees-registry-row]");
     }
 
-    public void clickRegisterOfEmployeesIcon() {
-        registerOfEmployeesIcon.click();
+    public void clickRegistryOfEmployeesIcon() {
+        registryOfEmployeesIcon.click();
     }
 
     public void searchEmployee(String employee) {
-        clickRegisterOfEmployeesIcon();
-        employeeNameFilterInput.setValue(employee).shouldBe(Condition.visible);
+        clickRegistryOfEmployeesIcon();
+        employeeNameFilter.setValue(employee).shouldBe(Condition.visible);
         sleep(5000);
     }
 
@@ -34,17 +34,17 @@ public class EmployeesPage {
         noEmployeesToDisplay.shouldBe(Condition.visible);
     }
 
-    public boolean noEmployeesToDisplayVisible() {
+    public boolean noEmployeesToDisplayIsVisible() {
         return noEmployeesToDisplay.is(Condition.visible);
     }
 
-    public String noEmployeesToDisplayString() {
+    public String noEmployeesToDisplayText() {
         return noEmployeesToDisplay.getText();
     }
 
-    public boolean isTextEmployeesRegistryRows(String text) {
+    public boolean isTextEmployeesRegistryRows(String legalEntity) {
         ElementsCollection options = employeesRegistryRows;
-        return options.stream().anyMatch(option -> option.getText().contains(text));
+        return options.stream().anyMatch(option -> option.getText().contains(legalEntity));
     }
 
 }

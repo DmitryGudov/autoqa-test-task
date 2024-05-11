@@ -8,17 +8,17 @@ import static io.restassured.RestAssured.given;
 
 public class ApiManager {
 
-    private static final String BASE_URL = ConfigManager.getProperty("baseUrlForApi");
+    private static final String BASE_URI = ConfigManager.getProperty("baseUriForApi");
     private static final String USER_API_TOKEN = ConfigManager.getProperty("userApiToken");
     private static final String CLIENT_ID = ConfigManager.getProperty("clientId");
 
     static {
-        RestAssured.baseURI = BASE_URL;
+        RestAssured.baseURI = BASE_URI;
     }
-
 
     public Response searchEmployeeInDocumentsRegistry(String employeeId) {
         return given()
+                .baseUri(BASE_URI + "1")
                 .header("User-Api-Token", USER_API_TOKEN)
                 .contentType(ContentType.JSON)
                 .pathParam("id", CLIENT_ID)
@@ -29,7 +29,7 @@ public class ApiManager {
 
     public Response searchEmployeeInApplicationsRegistry(String employeeId) {
         return given()
-                .baseUri("https://app-regress-dgudov.myhrlink.ru/api/v2")
+                .baseUri(BASE_URI + "2")
                 .header("User-Api-Token", USER_API_TOKEN)
                 .contentType(ContentType.JSON)
                 .pathParam("id", CLIENT_ID)
