@@ -1,1 +1,1 @@
-[![CI/CD для Java с использованием Maven](https://github.com/DmitryGudov/autoqa-test-task/actions/workflows/maven.yml/badge.svg)](https://github.com/DmitryGudov/autoqa-test-task/actions/workflows/maven.yml)
+
