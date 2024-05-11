@@ -17,8 +17,8 @@ public class ApplicationsPage {
     public ApplicationsPage() {
         registryOfApplicationsIcon = $x("//a[@href='/hr/applications']");
         noApplications = $x("//div[contains(@class, 'body')]");
-        applicationsRow = applicationsRows.first();
         applicationsRows = $$x("//div[contains(@class, 'row')]");
+        applicationsRow = applicationsRows.first();
     }
 
     public void clickRegistryOfApplicationsIcon() {

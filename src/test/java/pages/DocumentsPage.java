@@ -51,6 +51,7 @@ public class DocumentsPage {
     }
 
     public void searchLegalEntity(String legalEntityName) {
+        legalEntityFilter.click();
         legalEntityFilter.setValue(legalEntityName).shouldBe(Condition.visible);
         sleep(1500);
     }
