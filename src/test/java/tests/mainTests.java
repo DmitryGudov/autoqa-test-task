@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import pages.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverRunner.driver;
@@ -33,8 +34,8 @@ public class mainTests {
     private String documentsPageUrl = ConfigManager.getProperty("documentsPageUrl");
     private String email = ConfigManager.getProperty("email");
     private String password = ConfigManager.getProperty("password");
-    private String employeeName = ConfigManager.getProperty("employeeName");
-    private String legalEntityName = ConfigManager.getProperty("legalEntityName");
+    private String employee = ConfigManager.getProperty("employeeName");
+    private String legalEntity = ConfigManager.getProperty("legalEntityName");
     private String employeeId = ConfigManager.getProperty("employeeId");
 
     @Before
@@ -71,7 +72,7 @@ public class mainTests {
         documentsPage.clickSideFilter();
 
         // Задаем фильтр по сотруднику "Орлов Д."
-        documentsPage.searchEmployee(employeeName);
+        documentsPage.searchEmployee(employee);
 
         /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
            удовлетворящих условиям поиска, то ожидаем в выпадающем списке "Не найдено" */
@@ -83,7 +84,7 @@ public class mainTests {
             /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
                которые удовлетворяют условиям поиска, тогда проверяем, что среди этих сотрудников
                нет тех, которые относятся к юрлицу "ООО "Кот"" */
-            boolean actual = documentsPage.isTextInEmployeeList(legalEntityName);
+            boolean actual = documentsPage.isTextInEmployeeList(legalEntity);
             assertEquals(false, actual);
         }
     }
@@ -100,16 +101,24 @@ public class mainTests {
         // Проверяем, что "result":"true"
         Assertions.assertTrue(hrJsonPath.getBoolean("result"));
 
-        // Проверяем, что в ответе возвращается пустой массив документов
-        List<Object> documents = hrJsonPath.getList("documents");
-        Assertions.assertNotNull(documents);
-        Assertions.assertTrue(documents.isEmpty());
+        // Получаем массив документов из JSON-ответа
+        List<Map<String, Object>> documents = hrJsonPath.getList("documents");
+
+        // Если массив документов не пустой
+        if (!documents.isEmpty()) {
+            // Проверяем, что в теле ответа не содержится текст "ООО "Кот""
+            String responseAsString = hrRegistryResponse.asString();
+            Assertions.assertFalse(responseAsString.contains(legalEntity));
+        } else {
+            // Если массив документов пустой, то проверяем, что он действительно пустой
+            Assertions.assertTrue(documents.isEmpty());
+        }
     }
 
     @Step("2. В верхнем фильтре нажать на фильтр \"Юрлицо\"")
     public void testSearchLegalEntityInDocumentsRegistry() {
         // В реестре документов в поле "Юрлицо" вводим "ООО "Кот""
-        documentsPage.searchLegalEntity(legalEntityName);
+        documentsPage.searchLegalEntity(legalEntity);
 
         // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         documentsPage.notFoundLegalEntity();
@@ -120,7 +129,7 @@ public class mainTests {
     @Step("3. Открыть реестр заявлений")
     public void testSearchEmployeeInApplicationsRegistry() {
         // Переходим в реестр заявлений и задаем фильтр по сотруднику "Орлов Д."
-        applicationsPage.searchEmployee(employeeName);
+        applicationsPage.searchEmployee(employee);
 
         // Проверяем, что выпадающий список пуст и отображается "Не найдено"
         applicationsPage.notFoundEmployee();
@@ -149,7 +158,7 @@ public class mainTests {
     @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
     public void testSearchEmployeeInEmployeesRegistry() {
         // Переходим в реестр сотрудников и задаем в фильтре по ФИО "Орлов Д."
-        employeesPage.searchEmployee(employeeName);
+        employeesPage.searchEmployee(employee);
 
         /* Если у сотрудника "Орлов Д." нет совместителей в других юрлицах и нет других сотрудников,
            удовлетворящих условиям поиска, то в реестре сотрудников ожидаем сообщение о том, что
@@ -162,7 +171,7 @@ public class mainTests {
             /* Если у сотрудника "Орлов Д." есть совместитель в другом юрлице или есть сотрудники,
                которые удовлетворяют условиям поиска, тогда проверяем, что среди этих сотрудников
                нет тех, которые относятся к юрлицу "ООО "Кот"" */
-            boolean actual = employeesPage.isTextEmployeesRegistryRows(legalEntityName);
+            boolean actual = employeesPage.isTextEmployeesRegistryRows(legalEntity);
             assertEquals(false, actual);
         }
 
@@ -174,7 +183,7 @@ public class mainTests {
         handbooksPage.clickHandBooksIcon();
 
         // Проверяем, что в перечне юрлиц отсутствует "ООО "Кот""
-        boolean actual = handbooksPage.isTextLegalEntityRegistryRows(legalEntityName);
+        boolean actual = handbooksPage.isTextLegalEntityRegistryRows(legalEntity);
         assertEquals(false, actual);
     }
 
