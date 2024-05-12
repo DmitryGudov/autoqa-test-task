@@ -1,7 +1,6 @@
 package tests;
 
 import com.codeborne.selenide.Configuration;
-import io.qameta.allure.Step;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import managers.ApiManager;
@@ -11,6 +10,9 @@ import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import pages.*;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import static com.codeborne.selenide.WebDriverRunner.driver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class mainTests {
 
     private LoginPage loginPage = new LoginPage();
@@ -45,19 +48,8 @@ public class mainTests {
     }
 
     @Test
-    @DisplayName("Проверка недоступности юрлица, на которое у кадровика нет прав")
-    public void mainTests() {
-        testSuccessfulLogin();
-        testSearchEmployeeInDocumentsRegistry();
-        testSearchDocumentInDocumentsRegistry();
-        testSearchLegalEntityInDocumentsRegistry();
-        testSearchEmployeeInApplicationsRegistry();
-        testSearchApplicationInApplicationsRegistry();
-        testSearchEmployeeInEmployeesRegistry();
-        testSearchLegalEntityInLegalEntitiesRegistry();
-    }
-
-    @Step("1. Выполнить вход в ЛК кадровика")
+    @Order(1)
+    @DisplayName("1. Выполнить вход в ЛК кадровика")
     public void testSuccessfulLogin() {
         // Входим в аккаунт кадровика из "ОАО "Тепло""
         loginPage.login(email, password);
@@ -66,7 +58,9 @@ public class mainTests {
         assertTrue(driver().getWebDriver().getCurrentUrl().contains(documentsPageUrl));
     }
 
-    @Step("1.1. Поиск по фильтру 'Сотрудник' в реестре документов")
+    @Test
+    @Order(2)
+    @DisplayName("1.1. Поиск по фильтру 'Сотрудник' в реестре документов")
     public void testSearchEmployeeInDocumentsRegistry() {
         // В реестре документов открываем боковое меню
         documentsPage.clickSideFilter();
@@ -89,7 +83,9 @@ public class mainTests {
         }
     }
 
-    @Step("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
+    @Test
+    @Order(3)
+    @DisplayName("1.2. Проверка отсутствия документа в реестре по искомому сотруднику")
     public void testSearchDocumentInDocumentsRegistry() {
         // Проверяем, что в реестре документов отсутствуют документы, где "Орлов Д." фигурирует в качестве сотрудника
         Response response = apiManager.searchEmployeeInDocumentsRegistry(employeeId);
@@ -115,7 +111,9 @@ public class mainTests {
         }
     }
 
-    @Step("2. В верхнем фильтре нажать на фильтр \"Юрлицо\"")
+    @Test
+    @Order(4)
+    @DisplayName("2. В верхнем фильтре нажать на фильтр \"Юрлицо\"")
     public void testSearchLegalEntityInDocumentsRegistry() {
         // В реестре документов в поле "Юрлицо" вводим "ООО "Кот""
         documentsPage.searchLegalEntity(legalEntity);
@@ -126,7 +124,9 @@ public class mainTests {
         assertTrue(actualText.contains("Ненайдено"));
     }
 
-    @Step("3. Открыть реестр заявлений")
+    @Test
+    @Order(5)
+    @DisplayName("3. Открыть реестр заявлений")
     public void testSearchEmployeeInApplicationsRegistry() {
         // Переходим в реестр заявлений
         applicationsPage.clickRegistryOfApplicationsIcon();
@@ -143,7 +143,9 @@ public class mainTests {
         }
     }
 
-    @Step("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
+    @Test
+    @Order(6)
+    @DisplayName("3.1. Проверка отсутствия заявления в реестре по искомому сотруднику")
     public void testSearchApplicationInApplicationsRegistry() {
         // Проверяем, что в реестре заявлений отсутствуют заявления, где "Орлов Д." фигурирует в качестве сотрудника
         Response response = apiManager.searchEmployeeInApplicationsRegistry(employeeId);
@@ -170,7 +172,9 @@ public class mainTests {
 
     }
 
-    @Step("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
+    @Test
+    @Order(7)
+    @DisplayName("4. Поиск по фильтру 'ФИО' в реестре Сотрудников")
     public void testSearchEmployeeInEmployeesRegistry() {
         // Переходим в реестр сотрудников и задаем в фильтре по ФИО "Орлов Д."
         employeesPage.searchEmployee(employee);
@@ -192,7 +196,9 @@ public class mainTests {
 
     }
 
-    @Step("5. Открыть раздел \"Справочники\"")
+    @Test
+    @Order(8)
+    @DisplayName("5. Открыть раздел \"Справочники\"")
     public void testSearchLegalEntityInLegalEntitiesRegistry() {
         // Переходим в раздел "Справочники"
         handbooksPage.clickHandBooksIcon();
