@@ -18,7 +18,7 @@ public class DBConnectionManager {
         if (sessionSsh == null) {
             try {
                 var jsch = new JSch();
-                jsch.addIdentity(new File("").getAbsolutePath() + "/id_rsa");
+                jsch.addIdentity("/home/dev/.ssh/id_rsa", new File("/home/dev/.ssh/id_rsa").toPath().toFile().getAbsolutePath());
                 sessionSsh = jsch.getSession(ConfigManager.getProperty("sshUser"), ConfigManager.getProperty("sshHost"),
                         Integer.parseInt(ConfigManager.getProperty("sshPort")));
                 var sessionConfig = new Properties();
