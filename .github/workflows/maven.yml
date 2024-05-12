@@ -20,9 +20,8 @@ jobs:
         run: mvn clean test -Dtest=mainTests
       - name: Generate Allure Report
         run: mvn allure:report
-      - name: Push Allure Report to Branch
-        uses: mikepenz/action-github-pages@v3
+      - name: Publish Allure Report
+        uses: actions/upload-artifact@v2
         with:
-          build_dir: ./
-          target_branch: allure-report
-          commit_message: Update Allure Report
+          name: allure-report
+          path: target/site/allure-maven/
