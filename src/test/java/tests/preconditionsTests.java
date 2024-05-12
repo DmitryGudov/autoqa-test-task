@@ -2,7 +2,7 @@ package tests;
 
 import managers.ConfigManager;
 import managers.SQLQueryManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
 import java.util.List;
