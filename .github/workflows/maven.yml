@@ -14,14 +14,19 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Wait for a few seconds
+        run: sleep 10
       - name: Install Maven
         run: sudo apt-get install -y maven
       - name: Build and Test with Maven
         run: mvn clean test -Dtest=mainTests
       - name: Generate Allure Report
-        run: mvn allure:report
+        run: |
+          mvn allure:report
+          # Перемещение отчетов Allure в корневую директорию проекта с названием "autoqa-test-task"
+          mv target/site/allure-report allure-report
       - name: Publish Allure Report
         uses: actions/upload-artifact@v2
         with:
           name: allure-report
-          path: target/site/allure-maven/
+          path: allure-report/
