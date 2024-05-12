@@ -44,6 +44,7 @@ mvn clean test && mvn allure:report
 
 
 # Отчет
-![Снимок экрана от 2024-05-12 15-30-27.png](..%2F..%2F%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BA%D0%B8%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%20%D0%BE%D1%82%202024-05-12%2015-30-27.png)
-![Снимок экрана от 2024-05-12 15-30-47.png](..%2F..%2F%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BA%D0%B8%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%20%D0%BE%D1%82%202024-05-12%2015-30-47.png)
-![Снимок экрана от 2024-05-12 15-30-56.png](..%2F..%2F%D0%98%D0%B7%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BA%D0%B8%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%2F%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%20%D0%BE%D1%82%202024-05-12%2015-30-56.png)
+![Снимок экрана от 2024-05-12 15-30-27](https://github.com/DmitryGudov/autoqa-test-task/assets/124876096/2e4e4c43-9433-4299-8a36-50e4292a8607)
+![Снимок экрана от 2024-05-12 15-30-47](https://github.com/DmitryGudov/autoqa-test-task/assets/124876096/f04a8e90-d6e9-4dec-ba06-91093b11185e)
+![Снимок экрана от 2024-05-12 15-30-56](https://github.com/DmitryGudov/autoqa-test-task/assets/124876096/049613ca-eed2-4b80-9686-5f4082477be6)
+
